@@ -92,7 +92,7 @@ def consultar_gemini(contents, api_key):
     client = genai.Client(api_key=api_key)
     
     # Lista de modelos en orden de preferencia (Fallback)
-    modelos = ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-1.5-flash"]
+    modelos = ["gemini-3.8-flash", "gemini-2.5-flash"]
     
     ultimo_error = None
     for modelo in modelos:
