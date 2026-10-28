@@ -52,7 +52,7 @@ with st.sidebar:
         st.caption("Aún no has realizado búsquedas.")
         
     st.divider()
-    st.caption("Powered by Gemini API")
+    st.caption("Powered by Gemini 3.8 Flash")
 
 # 4. ENCABEZADO
 st.markdown('<p class="main-title">🎨 Asistente de Mezclas de Pintura</p>', unsafe_allow_html=True)
@@ -74,13 +74,29 @@ Responde ÚNICAMENTE en formato JSON estricto con esta estructura:
 }}
 """
 
-# FUNCIÓN CON REINTENTOS AUTOMÁTICOS Y MODELOS DE RESPALDO (FALLBACK)
-def consultar_gemini_con_retry(contents, api_key):
+def obtener_api_key():
+    # Intenta buscar primero en os.environ (para Colab/Cloudflare) y luego en st.secrets (para Streamlit Cloud)
+    key = os.environ.get("GEMINI_API_KEY")
+    if not key:
+        try:
+            if "GEMINI_API_KEY" in st.secrets:
+                key = st.secrets["GEMINI_API_KEY"]
+        except Exception:
+            pass
+    return key
+
+def consultar_gemini(contents, api_key):
+    if not api_key:
+        raise ValueError("No se encontró la GEMINI_API_KEY. Configúrala en las variables de entorno o Secrets.")
+        
     client = genai.Client(api_key=api_key)
+    
+    # Lista de modelos en orden de preferencia (Fallback)
     modelos = ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-1.5-flash"]
     
+    ultimo_error = None
     for modelo in modelos:
-        for intento in range(2): # 2 intentos por modelo
+        for intento in range(2): # Reintenta cada modelo hasta 2 veces
             try:
                 response = client.models.generate_content(
                     model=modelo,
@@ -93,17 +109,35 @@ def consultar_gemini_con_retry(contents, api_key):
                 )
                 return json.loads(response.text)
             except Exception as e:
-                # Si es error 503 o 429, espera 1.5 segundos y reintenta
-                if "503" in str(e) or "429" in str(e):
-                    time.sleep(1.5)
-                else:
-                    break # Si es otro error, salta al siguiente modelo
-    raise Exception("Los servidores de Gemini están ocupados en este momento. Por favor presiona 'Calcular' nuevamente en unos segundos.")
+                ultimo_error = e
+                # Si el modelo da 503 u ocupado, aguarda 1.5s antes del siguiente intento
+                time.sleep(1.5)
+                
+    raise Exception(f"Los servidores de la API están experimentando alta demanda. Por favor intenta de nuevo en unos segundos. ({ultimo_error})")
+    
+    # 2 intentos con el modelo oficial exigido gemini-3.8-flash
+    for intento in range(2):
+        try:
+            response = client.models.generate_content(
+                model="gemini-3.8-flash",
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_INSTRUCTION,
+                    response_mime_type="application/json",
+                    temperature=0.2
+                )
+            )
+            return json.loads(response.text)
+        except Exception as e:
+            if intento == 0:
+                time.sleep(2) # Espera 2 segundos si el servidor estaba ocupado y reintenta
+            else:
+                raise Exception(f"Error de conexión con la API: {str(e)}")
 
 @st.cache_data(show_spinner=False)
 def obtener_receta_texto(prompt_texto, api_key):
     contents = f"Dame la receta para obtener el color: {prompt_texto}"
-    return consultar_gemini_con_retry(contents, api_key)
+    return consultar_gemini(contents, api_key)
 
 # 5. SECCIÓN DE ENTRADA
 col_input, col_space = st.columns([2, 1])
@@ -148,11 +182,11 @@ if btn_calcular:
         st.divider()
         with st.spinner("🔍 Analizando pigmentos..."):
             try:
-                api_key = os.environ.get("GEMINI_API_KEY")
+                api_key = obtener_api_key()
 
                 if imagen_cargada:
                     prompt = "Identifica el color principal en esta imagen y dame la receta de mezcla."
-                    datos = consultar_gemini_con_retry([imagen_cargada, prompt], api_key)
+                    datos = consultar_gemini([imagen_cargada, prompt], api_key)
                 else:
                     datos = obtener_receta_texto(color_deseado, api_key)
 
