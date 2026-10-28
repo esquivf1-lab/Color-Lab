@@ -91,30 +91,29 @@ def consultar_gemini(contents, api_key):
         
     client = genai.Client(api_key=api_key)
     
-    # Lista de modelos en orden de preferencia (Fallback)
-    modelos = ["gemini-3.8-flash", "gemini-2.5-flash"]
+    # Único modelo activo y soportado para tu cuenta
+    modelo_oficial = "gemini-3.8-flash"
     
     ultimo_error = None
-    for modelo in modelos:
-        for intento in range(2): # Reintenta cada modelo hasta 2 veces
-            try:
-                response = client.models.generate_content(
-                    model=modelo,
-                    contents=contents,
-                    config=types.GenerateContentConfig(
-                        system_instruction=SYSTEM_INSTRUCTION,
-                        response_mime_type="application/json",
-                        temperature=0.2
-                    )
+    # Reintenta hasta 3 veces sobre el modelo único si el servidor responde ocupado
+    for intento in range(3):
+        try:
+            response = client.models.generate_content(
+                model=modelo_oficial,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_INSTRUCTION,
+                    response_mime_type="application/json",
+                    temperature=0.2
                 )
-                return json.loads(response.text)
-            except Exception as e:
-                ultimo_error = e
-                # Si el modelo da 503 u ocupado, aguarda 1.5s antes del siguiente intento
-                time.sleep(1.5)
-                
-    raise Exception(f"Los servidores de la API están experimentando alta demanda. Por favor intenta de nuevo en unos segundos. ({ultimo_error})")
-    
+            )
+            return json.loads(response.text)
+        except Exception as e:
+            ultimo_error = e
+            # Espera 2 segundos en el primer fallo y 3 en el segundo antes de volver a intentar
+            time.sleep(2 + intento)
+            
+    raise Exception("Los servidores de la API están ocupados en este momento. Por favor presiona 'Calcular' nuevamente en unos segundos.")    
     # 2 intentos con el modelo oficial exigido gemini-3.8-flash
     for intento in range(2):
         try:
