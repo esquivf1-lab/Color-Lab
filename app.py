@@ -75,7 +75,6 @@ Responde ÚNICAMENTE en formato JSON estricto con esta estructura:
 """
 
 def obtener_api_key():
-    # Intenta buscar primero en os.environ (para Colab/Cloudflare) y luego en st.secrets (para Streamlit Cloud)
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
         try:
@@ -91,30 +90,29 @@ def consultar_gemini(contents, api_key):
         
     client = genai.Client(api_key=api_key)
     
-    # ÚNICO MODELO VÁLIDO Y SOPORTADO
-    modelo_oficial = "gemini-3.8-flash"
+    # Modelos activos y exigidos por la API de Google para tu cuenta
+    modelos_validos = ["gemini-3.5-flash-lite", "gemini-3.8-flash"]
     
-    # Reintenta hasta 4 veces únicamente sobre el modelo oficial
-    for intento in range(4):
-        try:
-            response = client.models.generate_content(
-                model=modelo_oficial,
-                contents=contents,
-                config=types.GenerateContentConfig(
-                    system_instruction=SYSTEM_INSTRUCTION,
-                    response_mime_type="application/json",
-                    temperature=0.2
+    ultimo_error = None
+    for modelo in modelos_validos:
+        for intento in range(2):
+            try:
+                response = client.models.generate_content(
+                    model=modelo,
+                    contents=contents,
+                    config=types.GenerateContentConfig(
+                        system_instruction=SYSTEM_INSTRUCTION,
+                        response_mime_type="application/json",
+                        temperature=0.2
+                    )
                 )
-            )
-            return json.loads(response.text)
-        except Exception as e:
-            # Si el servidor responde ocupado (503), espera un tiempo progresivo (2s, 3s, 4s) antes de volver a intentar
-            if intento < 3:
-                time.sleep(2 + intento)
-            else:
-                pass
+                return json.loads(response.text)
+            except Exception as e:
+                ultimo_error = e
+                time.sleep(1)
                 
-    raise Exception("Los servidores de la API están ocupados en este momento. Por favor presiona 'Calcular' nuevamente en unos segundos.")
+    raise Exception(f"Servidores ocupados temporalmente. Por favor reintenta en unos segundos.")
+
 @st.cache_data(show_spinner=False)
 def obtener_receta_texto(prompt_texto, api_key):
     contents = f"Dame la receta para obtener el color: {prompt_texto}"
@@ -186,6 +184,7 @@ if btn_calcular:
                 with col_res2:
                     st.subheader(f"🧪 Receta para: **{color_nombre}**")
 
+                # Definimos componentes dentro del try
                 componentes = datos.get("mezcla", [])
                 cols = st.columns(len(componentes) if componentes else 1)
                 for idx, elem in enumerate(componentes):
