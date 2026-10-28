@@ -91,15 +91,14 @@ def consultar_gemini(contents, api_key):
         
     client = genai.Client(api_key=api_key)
     
-    # Único modelo activo y soportado para tu cuenta
-    modelo_oficial = "gemini-3.8-flash"
+    # Cadena de modelos oficiales
+    modelos = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
     
     ultimo_error = None
-    # Reintenta hasta 3 veces sobre el modelo único si el servidor responde ocupado
-    for intento in range(3):
+    for modelo in modelos:
         try:
             response = client.models.generate_content(
-                model=modelo_oficial,
+                model=modelo,
                 contents=contents,
                 config=types.GenerateContentConfig(
                     system_instruction=SYSTEM_INSTRUCTION,
@@ -110,28 +109,10 @@ def consultar_gemini(contents, api_key):
             return json.loads(response.text)
         except Exception as e:
             ultimo_error = e
-            # Espera 2 segundos en el primer fallo y 3 en el segundo antes de volver a intentar
-            time.sleep(2 + intento)
+            time.sleep(1) # Pausa ligera de 1 segundo antes de probar el siguiente modelo
+            continue
             
-    raise Exception("Los servidores de la API están ocupados en este momento. Por favor presiona 'Calcular' nuevamente en unos segundos.")    
-    # 2 intentos con el modelo oficial exigido gemini-3.8-flash
-    for intento in range(2):
-        try:
-            response = client.models.generate_content(
-                model="gemini-3.8-flash",
-                contents=contents,
-                config=types.GenerateContentConfig(
-                    system_instruction=SYSTEM_INSTRUCTION,
-                    response_mime_type="application/json",
-                    temperature=0.2
-                )
-            )
-            return json.loads(response.text)
-        except Exception as e:
-            if intento == 0:
-                time.sleep(2) # Espera 2 segundos si el servidor estaba ocupado y reintenta
-            else:
-                raise Exception(f"Error de conexión con la API: {str(e)}")
+    raise Exception(f"Los servidores de la API están ocupados en este momento ({ultimo_error}). Por favor reintenta en unos segundos.")
 
 @st.cache_data(show_spinner=False)
 def obtener_receta_texto(prompt_texto, api_key):
