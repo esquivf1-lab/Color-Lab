@@ -91,14 +91,14 @@ def consultar_gemini(contents, api_key):
         
     client = genai.Client(api_key=api_key)
     
-    # Cadena de modelos oficiales
-    modelos = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+    # ÚNICO MODELO VÁLIDO Y SOPORTADO
+    modelo_oficial = "gemini-3.8-flash"
     
-    ultimo_error = None
-    for modelo in modelos:
+    # Reintenta hasta 4 veces únicamente sobre el modelo oficial
+    for intento in range(4):
         try:
             response = client.models.generate_content(
-                model=modelo,
+                model=modelo_oficial,
                 contents=contents,
                 config=types.GenerateContentConfig(
                     system_instruction=SYSTEM_INSTRUCTION,
@@ -108,12 +108,13 @@ def consultar_gemini(contents, api_key):
             )
             return json.loads(response.text)
         except Exception as e:
-            ultimo_error = e
-            time.sleep(1) # Pausa ligera de 1 segundo antes de probar el siguiente modelo
-            continue
-            
-    raise Exception(f"Los servidores de la API están ocupados en este momento ({ultimo_error}). Por favor reintenta en unos segundos.")
-
+            # Si el servidor responde ocupado (503), espera un tiempo progresivo (2s, 3s, 4s) antes de volver a intentar
+            if intento < 3:
+                time.sleep(2 + intento)
+            else:
+                pass
+                
+    raise Exception("Los servidores de la API están ocupados en este momento. Por favor presiona 'Calcular' nuevamente en unos segundos.")
 @st.cache_data(show_spinner=False)
 def obtener_receta_texto(prompt_texto, api_key):
     contents = f"Dame la receta para obtener el color: {prompt_texto}"
