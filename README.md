@@ -55,19 +55,25 @@ pip install -r requirements.txt
 
 # Ruta A: poned la clave en .streamlit/secrets.toml y ejecutad
 streamlit run app.py
-Captura
-La app funcionando en su caso principal.
-<img width="989" height="452" alt="image" src="https://github.com/user-attachments/assets/fef636d9-1274-461b-9bfd-947944c5fdb4" />
-•	Línea explicativa: Muestra de la aplicación calculando con éxito la receta de mezcla en porcentajes, partes y consejo técnico para Vino Tinto Oscuro.
-La app ante un caso límite o un error: un texto vacío, una pregunta fuera de tema o la cuota agotada, con su mensaje.
-<img width="989" height="443" alt="image" src="https://github.com/user-attachments/assets/7f899890-1374-40da-ac1f-2a1f6b04eadb" />
-•	Manejo de caso límite ante una entrada vacía, mostrando una advertencia clara al usuario sin invocar la API ni generar un fallo en la app.
-Vuestro trabajo con la IA: un momento de la conversación con el asistente o el agente, donde se vea uno de vuestros prompts clave y lo que os devolvió.
-<img width="988" height="554" alt="image" src="https://github.com/user-attachments/assets/d241be83-1247-4980-9b8f-ce4a383ed670" />
-•	Línea explicativa: Iteración de desarrollo en Google Colab ajustando la lógica de interfaz en Streamlit y la integración del SDK google-genai para la aplicación Color Lab.
-La prueba: la respuesta de un compañero en el debate del hito o, si la habéis probado vosotros, la app con el caso que os hizo cambiar algo.
-<img width="989" height="460" alt="image" src="https://github.com/user-attachments/assets/3479c03e-93b7-45bc-a0dd-2a518d393314" />
-•	Línea explicativa: Prueba de uso con la usuaria final (mi esposa), cuya sugerencia de seleccionar rápidamente tonos habituales motivó la incorporación de los botones de sugerencias rápidas en la interfaz.
+```
+
+## Capturas
+
+1. **La app funcionando en su caso principal:**
+<img width="989" height="452" alt="image" src="[https://github.com/user-attachments/assets/fef636d9-1274-461b-9bfd-947944c5fdb4](https://github.com/user-attachments/assets/fef636d9-1274-461b-9bfd-947944c5fdb4)" />
+*Muestra de la aplicación calculando con éxito la receta de mezcla en porcentajes, partes y consejo técnico.*
+
+2. **La app ante un caso límite o un error:**
+<img width="989" height="443" alt="image" src="[https://github.com/user-attachments/assets/7f899890-1374-40da-ac1f-2a1f6b04eadb](https://github.com/user-attachments/assets/7f899890-1374-40da-ac1f-2a1f6b04eadb)" />
+*Manejo de caso límite ante una entrada vacía, mostrando una advertencia clara al usuario sin invocar la API ni generar un fallo.*
+
+3. **Vuestro trabajo con la IA:**
+<img width="988" height="554" alt="image" src="[https://github.com/user-attachments/assets/d241be83-1247-4980-9b8f-ce4a383ed670](https://github.com/user-attachments/assets/d241be83-1247-4980-9b8f-ce4a383ed670)" />
+*Iteración de desarrollo en Google Colab ajustando la lógica de interfaz en Streamlit y la integración del SDK google-genai.*
+
+4. **La prueba:**
+<img width="989" height="460" alt="image" src="[https://github.com/user-attachments/assets/3479c03e-93b7-45bc-a0dd-2a518d393314](https://github.com/user-attachments/assets/3479c03e-93b7-45bc-a0dd-2a518d393314)" />
+*Prueba de uso con la usuaria final (mi esposa), cuya sugerencia motivó la incorporación de los botones de sugerencias rápidas.*
 
 
 
