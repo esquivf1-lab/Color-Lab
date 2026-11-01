@@ -6,9 +6,8 @@
 
 ## 🚀 Enlaces del Proyecto
 
-- **App Desplegada:** [Color Lab en Streamlit Cloud](https://color-lab-jlbcb9okorcd2lhomsvht2.streamlit.app/)
-- **Repositorio:** [GitHub - esquivf1-lab/Color-Lab](https://github.com/esquivf1-lab/Color-Lab)
-
+- **App Desplegada:** https://color-lab-jlvcb9okorcd2lhomsvht2.streamlit.app/
+- **Repositorio:** https://github.com/esquivf1-lab/Color-Lab
 ---
 
 ## 🎯 Problema y Solución
@@ -56,7 +55,7 @@ Si deseas clonar y correr la aplicación localmente:
 ```bash
 # 1. Clonar el repositorio
 git clone [https://github.com/esquivf1-lab/Color-Lab.git](https://github.com/esquivf1-lab/Color-Lab.git)
-cd Color-Lab
+cd Color-Lab 
 
 # 2. Instalar dependencias
 pip install -r requirements.txt
