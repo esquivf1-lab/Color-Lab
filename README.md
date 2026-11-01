@@ -60,19 +60,23 @@ streamlit run app.py
 ## Capturas
 
 1. **La app funcionando en su caso principal:**
-<img width="989" height="452" alt="image" src="[https://github.com/user-attachments/assets/fef636d9-1274-461b-9bfd-947944c5fdb4](https://github.com/user-attachments/assets/fef636d9-1274-461b-9bfd-947944c5fdb4)" />
+<img width="1043" height="496" alt="1" src="https://github.com/user-attachments/assets/2789e381-6460-4a77-a22f-4264dc2fbe34" />
+
 *Muestra de la aplicación calculando con éxito la receta de mezcla en porcentajes, partes y consejo técnico.*
 
 2. **La app ante un caso límite o un error:**
-<img width="989" height="443" alt="image" src="[https://github.com/user-attachments/assets/7f899890-1374-40da-ac1f-2a1f6b04eadb](https://github.com/user-attachments/assets/7f899890-1374-40da-ac1f-2a1f6b04eadb)" />
+<img width="997" height="454" alt="2" src="https://github.com/user-attachments/assets/234e58f8-70db-452c-b9e1-965d2eecb84c" />
+
 *Manejo de caso límite ante una entrada vacía, mostrando una advertencia clara al usuario sin invocar la API ni generar un fallo.*
 
 3. **Vuestro trabajo con la IA:**
-<img width="988" height="554" alt="image" src="[https://github.com/user-attachments/assets/d241be83-1247-4980-9b8f-ce4a383ed670](https://github.com/user-attachments/assets/d241be83-1247-4980-9b8f-ce4a383ed670)" />
+<img width="944" height="552" alt="3" src="https://github.com/user-attachments/assets/19805b50-15be-422b-bda9-cc3706e2a9a0" />
+
 *Iteración de desarrollo en Google Colab ajustando la lógica de interfaz en Streamlit y la integración del SDK google-genai.*
 
 4. **La prueba:**
-<img width="989" height="460" alt="image" src="[https://github.com/user-attachments/assets/3479c03e-93b7-45bc-a0dd-2a518d393314](https://github.com/user-attachments/assets/3479c03e-93b7-45bc-a0dd-2a518d393314)" />
+<img width="989" height="460" alt="4" src="https://github.com/user-attachments/assets/d744b607-6210-4acb-90ef-dca3cc046f05" />
+
 *Prueba de uso con la usuaria final (mi esposa), cuya sugerencia motivó la incorporación de los botones de sugerencias rápidas.*
 
 
