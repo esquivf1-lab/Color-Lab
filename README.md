@@ -1,67 +1,56 @@
-# 🎨 Color Lab - Asistente de Mezclas de Pintura
+# Color Lab
 
-**Color Lab** es una aplicación web interactiva desarrollada en **Streamlit** y potenciada por la **API de Google Gemini**. Su objetivo es calcular la receta exacta de mezcla (en porcentajes y partes) a partir de una paleta fija de 5 colores primarios/base, adaptándose a distintas técnicas de aplicación como acrílico, óleo o manicura en gel.
+**Enlace a la app:** https://color-lab-jlvcb9okorcd2lhomsvht2.streamlit.app/
+**Autor/a:** Francisco Antonio Esquivel Barrantes
 
----
+## Pitch
 
-## 🚀 Enlaces del Proyecto
+Obtener la proporción exacta para lograr un tono de pintura específico es un problema común en manualidades, arte y manicura que hoy se resuelve perdiendo tiempo y material por ensayo y error.
+Color Lab es un asistente web en Streamlit que calcula instantáneamente la receta exacta de mezcla a partir de texto o fotografías usando una paleta base de 5 colores.
+La IA aporta la capacidad multimodal de desglosar la colorimetría de una foto e interpretar matices complejos en lenguaje natural, algo imposible de programar con reglas estáticas.
+Durante la fase de prueba aprendimos que los servidores sufrían picos de demanda, por lo que optimizamos el motor hacia el modelo gemini-3.5-flash-lite con reintentos automáticos para garantizar alta velocidad y disponibilidad.
+A futuro incorporaremos un exportador de recetas en PDF y un estimador de volumen en mililitros respaldado por pruebas de uso directo en talleres de manicura y artesanía.
 
-- **App Desplegada:** https://color-lab-jlvcb9okorcd2lhomsvht2.streamlit.app/
-- **Repositorio:** https://github.com/esquivf1-lab/Color-Lab
----
+## El problema
 
-## 🎯 Problema y Solución
+Aficionados a las manualidades, artistas plásticos y profesionales de la manicura (decoración en uñas) necesitan obtener tonos de pintura específicos a partir de una paleta limitada de colores primarios. Hoy en día lo resuelven mediante ensayo y error, desperdiciando material y tiempo al no lograr la proporción correcta. Merece la pena resolverlo porque optimiza el uso de insumos, reduce costos y ahorra tiempo en proyectos creativos.
 
-### El Problema
-Aficionados a las manualidades, artistas plásticos y profesionales de la manicura suelen desperdiciar tiempo y material intentando obtener tonos específicos mediante ensayo y error.
+## Qué hace la app
 
-### La Solución
-Color Lab utiliza un modelo multimodal de IA para analizar solicitudes en texto o muestras en imagen, entregando la proporción exacta de pigmentos en formato porcentual y partes concretas, acompañado de un consejo técnico específico para la técnica seleccionada.
+1. El usuario selecciona la técnica de pintura deseada en la barra lateral (Acrílico, Manicura/Gel, Óleo).
+2. Ingresa el nombre del color mediante texto (ej. "Vino tinto oscuro") o sube/captura una fotografía de la muestra de color.
+3. Puede hacer clic en los botones de **Sugerencias Rápidas** ("Piel / Nude", "Vino Tinto", "Verde Oliva", "Lavanda") para un llenado automático.
+4. Presiona "Calcular Receta de Mezcla".
+5. Visualiza la tarjeta de color (#HEX), las métricas en columnas con los porcentajes y partes de cada pigmento base (Rojo, Azul, Amarillo, Blanco, Negro) y un consejo técnico adaptado.
 
----
+## La pieza de IA
 
-## 🛠️ Especificaciones Técnicas
+- **Qué usa:** API de Gemini mediante el nuevo SDK `google-genai`, utilizando `gemini-3.5-flash-lite` como motor principal y `gemini-3.8-flash` como respaldo.
+- **Por qué esa opción:** Se eligió por su bajísima latencia, soporte nativo multimodal y alta disponibilidad en cuota gratuita.
+- **Qué pasa si falla:** La app cuenta con un bloque de reintentos progresivos (exponential backoff). Si la API experimenta saturación (503 UNAVAILABLE) o agota cuotas, despliega un mensaje amigable: `st.error("Servidores ocupados temporalmente. Por favor reintenta en unos segundos.")`.
 
-- **Lenguaje:** Python 3.10+
-- **Framework Web:** Streamlit
-- **SDK de IA:** `google-genai`
-- **Modelos Utilizados:** `gemini-3.5-flash-lite` (Principal) y `gemini-3.8-flash` (Respaldo/Fallback)
-- **Procesamiento:** Estructuración de salida en formato **JSON estricto** mediada por `system_instruction`.
+## Cómo la he construido
 
----
+- **Herramientas:** Google Colab con el asistente Gemini integrado para generación del script `app.py`, VS Code y GitHub.
+- **Fichero de contexto del agente:** https://github.com/esquivf1-lab/Color-Lab/blob/main/AGENTS.md
+- **Prompts clave:**
+  1. *"Actúa como un experto en colorimetría. Crea una System Instruction que restrinja las proporciones de mezcla de cualquier color pedido únicamente a Rojo, Azul, Amarillo, Blanco y Negro, respondiendo en formato JSON estricto."*
+  2. *"Adapta la llamada del cliente usando el nuevo SDK google-genai para enviar tanto imágenes como texto e implementar un sistema de reintentos ante errores 503."*
+  3. *"Optimiza la interfaz en Streamlit para mostrar las métricas por columnas y mantener el estado de la búsqueda mediante callbacks en los botones de sugerencia rápida."*
+- **Qué delegué al agente y qué revisé a mano:** Se delegó la estructura base de CSS, el prompt del sistema y el maquetado de `app.py`. Se revisó a mano la jerarquía de llamadas del SDK `google-genai`, la indentación de variables de estado (`componentes`) y la depuración de modelos obsoletos.
 
-## 🎨 Paleta Base Disponible
+## Prueba y mejora
 
-Cualquier color solicitado se desglosa únicamente utilizando los siguientes 5 pigmentos:
-- 🔴 **Rojo**
-- 🔵 **Azul**
-- 🟡 **Amarillo**
-- ⚪ **Blanco**
-- ⬛ **Negro**
+| Quién la probó | Qué probó | Qué pasó | Qué cambié |
+|---|---|---|---|
+| **Usuaria final (Esposa)** | Consultó colores específicos para manicura (ej. "Nude melocotón") en la pestaña de texto. | La mezcla dio el tono adecuado, pero sugirió acceso directo a colores frecuentes. | Se agregaron los botones de **Sugerencias Rápidas** en la interfaz. |
+| **Compañeros en debate del hito** | Probaron la carga de fotografías para detectar colores de muestra. | La app procesó bien la imagen, pero con picos de tráfico lanzaba errores de cuota (`503 UNAVAILABLE`). | Se optimizó el motor hacia `gemini-3.5-flash-lite` con reintentos automáticos (*backoff*). |
+| **Usuario / Creador** | Interacción repetida con botones de sugerencia y envío del formulario. | Se perdía la selección y la variable `componentes` lanzaba un error `NameError` de indentación. | Se reestructuró la gestión de estado (`st.session_state`) con callbacks (`on_click=set_color`) y se corrigió la indentación. |
 
----
-
-## 🛡️ Robustez y Manejo de Errores
-
-1. **Gestión de Secretos:** La `GEMINI_API_KEY` se lee directamente de las variables de entorno o de `st.secrets`, garantizando que nunca quede expuesta en el código fuente.
-2. **Reintentos y Fallback:** Si un modelo experimenta congestión (`503 UNAVAILABLE`) o errores de cuota, la app reintenta de forma automática con un modelo secundario (`gemini-3.5-flash-lite`) y captura las excepciones sin interrumpir la experiencia del usuario.
-
----
-
-## 💻 Instalación y Ejecución Local
-
-Si deseas clonar y correr la aplicación localmente:
+## Ejecutar en local (opcional)
 
 ```bash
-# 1. Clonar el repositorio
-git clone https://github.com/esquivf1-lab/Color-Lab.git
-cd Color-Lab 
-
-# 2. Instalar dependencias
 pip install -r requirements.txt
 
-# 3. Configurar la API Key
-export GEMINI_API_KEY="tu_api_key_aqui"
-
-# 4. Ejecutar la app
+# Ruta A: poned la clave en .streamlit/secrets.toml y ejecutad
 streamlit run app.py
