@@ -1,6 +1,7 @@
 # Color Lab
 
 **Enlace a la app:** https://color-lab-jlvcb9okorcd2lhomsvht2.streamlit.app/
+
 **Autor/a:** Francisco Antonio Esquivel Barrantes
 
 ## Pitch
