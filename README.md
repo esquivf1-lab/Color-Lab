@@ -54,7 +54,7 @@ Si deseas clonar y correr la aplicación localmente:
 
 ```bash
 # 1. Clonar el repositorio
-git clone [https://github.com/esquivf1-lab/Color-Lab.git]
+git clone https://github.com/esquivf1-lab/Color-Lab.git
 cd Color-Lab 
 
 # 2. Instalar dependencias
