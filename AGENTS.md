@@ -10,8 +10,8 @@ Asistente web interactivo que calcula la receta exacta de mezcla de pintura (en 
 
 - Python 3.10+
 - Interfaz: Streamlit (ruta A).
-- IA: API de Gemini con el SDK `google-genai`. El modelo principal es `gemini-3.5-flash-lite` y respaldo en `gemini-3.8-flash`.
-- Archivos: `app.py` (toda la app), `requirements.txt` (dependencias) y `README.md`.
+- IA: API de Gemini con el SDK `google-genai`. El modelo está definido en `app.py` utilizando `gemini-3.5-flash-lite` como principal y `gemini-3.8-flash` como respaldo.
+- Archivos: `app.py` (toda la app), `requirements.txt` (dependencias), `README.md` y `AGENTS.md`.
 - La especificación completa está en https://github.com/esquivf1-lab/Color-Lab/blob/main/README.md.
 
 ## Reglas
@@ -27,9 +27,9 @@ Asistente web interactivo que calcula la receta exacta de mezcla de pintura (en 
 
 - Ruta A: `streamlit run app.py` en local (con `.streamlit/secrets.toml`), o haz push y revisa la app en Streamlit Cloud.
 - Casos de prueba (entrada → lo que esperamos):
-  1. Texto: "Vino tinto oscuro" → Receta en JSON con desgloses de Rojo, Azul, Negro sumando 100% y un tip para acrílico/manualidades.
-  2. Imagen: Muestra de color en PNG/JPG → Detección multimodal del color con porcentajes y partes correspondientes.
-  3. Entrada vacía (botón Calcular sin texto ni foto) → Advertencia amigable `st.warning("⚠️ Ingresa un color o selecciona una imagen.")` sin invocar la API.
+  1. Texto: "Vino tinto oscuro" → Receta en JSON con desgloses de Rojo, Azul y Negro sumando 100% y un tip técnico para acrílico/manualidades.
+  2. Imagen: Muestra de color en PNG/JPG → Detección multimodal del color con sus porcentajes y partes correspondientes.
+  3. Entrada vacía (presionar "Calcular" sin texto ni foto) → La app muestra un aviso de advertencia amigable (`st.warning("⚠️ Ingresa un color o selecciona una imagen.")`) sin invocar la API ni fallar.
 
 ## Qué no hacer
 
